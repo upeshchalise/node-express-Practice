@@ -1,6 +1,9 @@
 const http = require("http");
 
 const server = http.createServer((req, res) => {
+  //   res.write(`welcome to the world of cola`);
+  //   res.end();
+
   if (req.url === "/") {
     res.end("welcome to the home page");
   } else if (req.url === "/about") {
