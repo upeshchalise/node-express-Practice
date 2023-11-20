@@ -1,35 +1,38 @@
 const express = require("express");
-const { Logger } = require("./middlewares/Logger");
-const { Authorize } = require("./middlewares/Authorize");
-const morgan = require("morgan");
-
 const app = express();
 
-// req => middleware => res
+let { people } = require("./data");
 
-// 1. use vs route
-// 2. options - our own / express / third party
+// static assests
+app.use(express.static("./final/methods-public"));
 
-// app.use([Logger, Authorize])
-// app.use(express.static("./public"));
-app.use(morgan("tiny"));
+// parse form data
+app.use(express.urlencoded({ extended: false }));
+//parse json
+app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("This is the home page");
+app.get("/api/people", (req, res) => {
+  res.status(200).json({ success: true, data: people });
 });
 
-app.get("/about", (req, res) => {
-  res.send("this is the about page");
+app.post("/api/people", (req, res) => {
+  const { name } = req.body;
+  if (!name) {
+    return res
+      .status(400)
+      .json({ success: false, msg: "Please provide the value for name" });
+  }
+  res.status(201).json({ success: true, person: name });
 });
 
-app.get("/api/products", (req, res) => {
-  res.send("this is the products page");
-});
-
-app.get("/api/items", (req, res) => {
-  res.send("this is the page where all the items are listed");
+app.post("/login", (req, res) => {
+  const { name } = req.body;
+  if (name) {
+    return res.status(200).send(`Welcome ${name}`);
+  }
+  res.status(401).send(`Please provide credentials`);
 });
 
 app.listen(3000, () => {
-  console.log("server has started at port 3000...");
+  console.log(`server has started at port 3000...`);
 });
