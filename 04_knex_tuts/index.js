@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-// require("dotenv").config;
+require("dotenv").config;
 const router = require("./db/routes/router.modal");
 const port = 3000;
 app.use(express.urlencoded({ extended: false }));
