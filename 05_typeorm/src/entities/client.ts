@@ -1,33 +1,21 @@
 import {
   Entity,
-  BaseEntity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
+  ManyToMany,
 } from "typeorm";
+import { Person } from "./utils/person";
+import { Transaction } from "./transaction";
+import { Banker } from "./banker";
 
 @Entity("client")
-export class Client extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  first_name: string;
-
-  @Column()
-  last_name: string;
-
+export class Client extends Person {
   @Column({
     type: "numeric",
   })
   balance: number;
-
-  @Column({
-    unique: true,
-    length: 10,
-  })
-  card_number: string;
 
   @Column({
     name: "active",
@@ -46,6 +34,12 @@ export class Client extends BaseEntity {
 
   @Column({ type: "simple-array", default: [] })
   family_members: string[];
+
+  @OneToMany(() => Transaction, (transaction) => transaction.client)
+  transactions: Transaction[];
+
+  @ManyToMany(() => Banker)
+  bankers: Banker[];
 
   @CreateDateColumn()
   created_at: Date;
